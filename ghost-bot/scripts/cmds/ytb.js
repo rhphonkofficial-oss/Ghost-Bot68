@@ -1,159 +1,154 @@
 const axios = require("axios");
-const fs = require('fs');
+const fs = require("fs-extra");
+const path = require("path");
 
-const baseApiUrl = async () => {
-	const base = await axios.get(
-`https://raw.githubusercontent.com/Mostakim0978/D1PT0/refs/heads/main/baseApiUrl.json`
-	);
-	return base.data.api;
-};
+const OWNER_UID = "61576396811594";
 
 module.exports = {
-	config: {
-		name: "ytb",
-		version: "1.1.4",
-		aliases: ['youtube'],
-		author: "dipto",
-		countDown: 5,
-		role: 0,
-		description: {
-			en: "Download video, audio, and info from YouTube"
-		},
-		category: "media",
-		guide: {
-			en: "  {pn} [video|-v] [<video name>|<video link>]: use to download video from YouTube."
-				+ "\n   {pn} [audio|-a] [<video name>|<video link>]: use to download audio from YouTube"
-				+ "\n   {pn} [info|-i] [<video name>|<video link>]: use to view video information from YouTube"
-				+ "\n   Example:"
-				+ "\n {pn} -v chipi chipi chapa chapa"
-				+ "\n {pn} -a chipi chipi chapa chapa"
-				+ "\n {pn} -i chipi chipi chapa chapa"
-		}
-	},
-	onStart: async ({ api, args, event, commandName }) => {
-		const action = args[0].toLowerCase();
-		
-					const checkurl = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((\w|-){11})(?:\S+)?$/;
-    const urlYtb = checkurl.test(args[1]);
-		let videoID
-  if(urlYtb){
-		if (action === '-v' || action === '-a') {
-			try {
-				const format = action === '-v' ? 'mp4' : 'mp3';
-				const path = `ytb_${format}_${videoID}.${format}`;
-	  
-	const match = args[1].match(checkurl);
-  videoID = match ? match[1] : null;
-				const { data: { title, downloadLink, quality } } = await axios.get(`${await baseApiUrl()}/ytDl3?link=${videoID}&format=${format}&quality=3`);
-await api.sendMessage({
-					body: `• Title: ${title}\n• Quality: ${quality}`,
-					attachment: await dipto(downloadLink, path)
-				}, event.threadID, () => fs.unlinkSync(path), event.messageID);
-			} catch (e) {
-				console.error(e);
-				return api.sendMessage('❌ Failed to download the video/audio. Please try again later.', event.threadID, event.messageID);
-			}
-		} }
-		args.shift();
-		let keyWord = args.join(" ");
-		const maxResults = 6;
-		let result;
-		try {
-			result = (await axios.get(`${await baseApiUrl()}/ytFullSearch?songName=${keyWord}`)).data.slice(0, maxResults);
-		} catch (err) {
-			return api.sendMessage("❌ An error occurred: " + err.message, event.threadID, event.messageID);
-		}
+  config: {
+    name: "ytb",
+    aliases: ["youtube", "yt"],
+    version: "3.0",
+    author: "Rakib Islam",
+    countDown: 10,
+    role: 0,
+    shortDescription: "YouTube MP3/MP4 downloader",
+    longDescription: "Download audio (mp3) or video (mp4) from YouTube",
+    category: "media",
+    guide: {
+      en: "{p}ytb mp3 <song name or link>\n{p}ytb mp4 <video name or link>\n{p}ytb info <video link>\n\nExample:\n{p}ytb mp3 Shape of You\n{p}ytb mp4 Funny cats"
+    }
+  },
 
-		if (result.length === 0) {
-			return api.sendMessage("⭕ No search results match the keyword: " + keyWord, event.threadID, event.messageID);
-		}
+  onStart: async function ({ api, args, event, message, commandName }) {
+    if (!args[0]) return message.reply("Usage:\n.ytb mp3 <song name>\n.ytb mp4 <video name>\n.ytb info <link>");
 
-		let msg = "";
-		let i = 1;
-		const thumbnails = [];
-		for (const info of result) {
-			thumbnails.push(diptoSt(info.thumbnail, `thumbnail.jpg`));
-			msg += `${i++}. ${info.title}\nTime: ${info.time}\nChannel: ${info.channel.name}\n\n`;
-		}
+    const action = args[0].toLowerCase();
+    args.shift();
+    const query = args.join(" ").trim();
 
-		api.sendMessage({
-			body: msg + "Reply to this message with a number to choose",
-			attachment: await Promise.all(thumbnails)
-		}, event.threadID, (err, info) => {		global.GoatBot.onReply.set(info.messageID, {
-				commandName,
-				messageID: info.messageID,
-				author: event.senderID,
-				result,
-				action
-			});
-		}, event.messageID);
-	},
+    if (!query) return message.reply(`Please provide a song/video name after '${action}'`);
 
-	onReply: async ({ event, api, Reply }) => {
-		const { result, action } = Reply;
-		const choice = parseInt(event.body);
+    const cacheDir = path.join(__dirname, "cache");
+    if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
 
-		if (isNaN(choice) || choice <= 0 || choice > result.length) {
-			return api.sendMessage('❌ Invalid choice. Please reply with a valid number.', event.threadID, event.messageID);
-		}
+    try {
+      await message.reply(`👻 Ghost Bot searching for: "${query}"\nPlease wait...`);
 
-		const selectedVideo = result[choice - 1];
-		const videoID = selectedVideo.id;
+      // Search YouTube
+      const searchRes = await axios.get(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=1&key=AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY`,
+        { timeout: 10000 }
+      ).catch(() => null);
 
-		if (action === '-v' || action === 'video' || action === 'mp4' || action === '-a'  || action === 'audio' || action === 'mp3' || action === 'music') {
-			try {
-				let format = ['-a', 'audio', 'mp3', 'music'].includes(action) ? 'mp3' : 'mp4';
-				const path = `ytb_${format}_${videoID}.${format}`;
-				const { data: { title, downloadLink, quality } } = await axios.get(`${await baseApiUrl()}/ytDl3?link=${videoID}&format=${format}&quality=3`);
+      let videoId, title, thumbnail;
 
-				api.unsendMessage(Reply.messageID);
-				await api.sendMessage({
-					body: `• Title: ${title}\n• Quality: ${quality}`,
-					attachment: await dipto(downloadLink, path)
-				}, event.threadID, () => fs.unlinkSync(path), event.messageID);
-			} catch (e) {
-				console.error(e);
-				return api.sendMessage('❌ Failed to download the video/audio. Please try again later.', event.threadID, event.messageID);
-			}
-		}
+      if (searchRes?.data?.items?.[0]) {
+        const item = searchRes.data.items[0];
+        videoId = item.id.videoId;
+        title = item.snippet.title;
+        thumbnail = item.snippet.thumbnails?.high?.url;
+      } else {
+        // fallback: use scraping API
+        const ytSearch = await axios.get(
+          `https://api.popcat.xyz/youtube/search?q=${encodeURIComponent(query)}`,
+          { timeout: 10000 }
+        );
+        if (!ytSearch.data?.[0]) return message.reply("❌ No results found. Try a different search.");
+        const vid = ytSearch.data[0];
+        videoId = vid.id;
+        title = vid.title;
+        thumbnail = vid.thumbnail;
+      }
 
-	if (action === '-i' || action === 'info') {
-			try {
-				const { data } = await axios.get(`${await baseApiUrl()}/ytfullinfo?videoID=${videoID}`);
-				api.unsendMessage(Reply.messageID);
-				await api.sendMessage({
-					body: `✨ | 𝚃𝚒𝚝𝚕𝚎: ${data.title}\n⏳ | 𝙳𝚞𝚛𝚊𝚝𝚒𝚘𝚗: ${data.duration / 60} minutes\n𝚁𝚎𝚜𝚘𝚕𝚞𝚝𝚒𝚘𝚗: ${data.resolution}\n👀 | 𝚅𝚒𝚎𝚠 𝙲𝚘𝚞𝚗𝚝: ${data.view_count}\n👍🏻 | 𝙻𝚒𝚔𝚎𝚜: ${data.like_count}\n📬 | 𝙲𝚘𝚖𝚖𝚎𝚗𝚝𝚜: ${data.comment_count}\n♻️ | 𝙲𝚊𝚝𝚎𝚐𝚘𝚛𝚒𝚎𝚜: ${data.categories[0]}\n🌐 | 𝙲𝚑𝚊𝚗𝚗𝚎𝚕: ${data.channel}\n🧍🏻‍♂️ | 𝚄𝚙𝚕𝚘𝚊𝚍𝚎𝚛 𝙸𝚍: ${data.uploader_id}\n👥 | 𝚂𝚞𝚋𝚜𝚌𝚛𝚒𝚋𝚎𝚛𝚜: ${data.channel_follower_count}\n🔗 | 𝙲𝚑𝚊𝚗𝚗𝚎𝚕 𝚄𝚛𝚕: ${data.channel_url}\n🔗 | 𝚅𝚒𝚍𝚎𝚘 𝚄𝚛𝚕: ${data.webpage_url}`,
-					attachment: await diptoSt(data.thumbnail, 'info_thumb.jpg')
-				}, event.threadID, event.messageID);
-			} catch (e) {
-				console.error(e);
-				return api.sendMessage('❌ Failed to retrieve video info. Please try again later.', event.threadID, event.messageID);
-			}
-		}
-	}
+      const ytUrl = `https://www.youtube.com/watch?v=${videoId}`;
+
+      if (action === "info") {
+        return message.reply(`
+🎬 𝗬𝗢𝗨𝗧𝗨𝗕𝗘 𝗩𝗜𝗗𝗘𝗢 𝗜𝗡𝗙𝗢
+━━━━━━━━━━━━━━━━
+📌 Title: ${title}
+🔗 Link: ${ytUrl}
+━━━━━━━━━━━━━━━━
+— Ghost Bot by Rakib Islam`);
+      }
+
+      const format = (action === "mp3" || action === "audio" || action === "-a") ? "mp3" : "mp4";
+      const filePath = path.join(cacheDir, `ghost_ytb_${Date.now()}.${format}`);
+
+      // Try multiple download APIs
+      const dlApis = [
+        `https://api.vevioz.com/api/button/${format}/${videoId}`,
+        `https://yt-download.org/api/button/${format}/${videoId}`,
+        `https://loader.to/api/button/?url=${encodeURIComponent(ytUrl)}&f=${format}`
+      ];
+
+      let dlUrl = null;
+
+      // Use y2mate-like approach via rapidapi
+      try {
+        const dlRes = await axios.get(
+          `https://api.fabdl.com/youtube/get?url=${encodeURIComponent(ytUrl)}`,
+          { timeout: 15000 }
+        );
+        if (dlRes.data?.result?.download_url) {
+          dlUrl = dlRes.data.result.download_url;
+        }
+      } catch (e) {}
+
+      // Alternative: use cobalt.tools API
+      if (!dlUrl) {
+        try {
+          const cobaltRes = await axios.post(
+            "https://api.cobalt.tools/api/json",
+            { url: ytUrl, isAudioOnly: format === "mp3", aFormat: "mp3" },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              },
+              timeout: 15000
+            }
+          );
+          if (cobaltRes.data?.url) dlUrl = cobaltRes.data.url;
+        } catch (e) {}
+      }
+
+      if (!dlUrl) {
+        return message.reply(`
+👻 Ghost Bot found: "${title}"
+🔗 ${ytUrl}
+
+⚠️ Direct download not available right now.
+👉 Use this link to download manually!
+— Ghost Bot by Rakib Islam`);
+      }
+
+      // Download the file
+      const fileRes = await axios({
+        url: dlUrl,
+        method: "GET",
+        responseType: "stream",
+        timeout: 60000
+      });
+
+      const writer = fs.createWriteStream(filePath);
+      fileRes.data.pipe(writer);
+
+      await new Promise((resolve, reject) => {
+        writer.on("finish", resolve);
+        writer.on("error", reject);
+      });
+
+      await message.reply({
+        body: `👻 Ghost Bot — ${format.toUpperCase()} Download\n━━━━━━━━━━━━━━━━\n🎵 ${title}\n━━━━━━━━━━━━━━━━\n— Rakib Islam | Ghost Bot`,
+        attachment: fs.createReadStream(filePath)
+      });
+
+      setTimeout(() => { try { fs.unlinkSync(filePath); } catch (e) {} }, 10000);
+
+    } catch (err) {
+      message.reply(`❌ Error: ${err.message}\nTry: .ytb mp3 <song name>`);
+    }
+  }
 };
-async function dipto(url,pathName) {
-	try {
-		const response = (await axios.get(url,{
-			responseType: "arraybuffer"
-		})).data;
-
-		fs.writeFileSync(pathName, Buffer.from(response));
-		return fs.createReadStream(pathName);
-	}
-	catch (err) {
-		throw err;
-	}
-}
-async function diptoSt(url,pathName) {
-	try {
-		const response = await axios.get(url,{
-			responseType: "stream"
-		});
-		response.data.path = pathName;
-		return response.data;
-	}
-	catch (err) {
-		throw err;
-	}
-}

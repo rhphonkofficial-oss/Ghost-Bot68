@@ -1,83 +1,92 @@
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
 
 module.exports = {
   config: {
-    name: 'song',
-    author: 'Nyx',
-    usePrefix: false,
-    category: 'Youtube Song Downloader'
+    name: "song",
+    aliases: ["music", "mp3", "গান"],
+    version: "3.0",
+    author: "Rakib Islam",
+    countDown: 15,
+    role: 0,
+    shortDescription: "Download any song as MP3",
+    category: "media",
+    guide: { en: "{p}song <song name>\nExample: {p}song Shape of You" }
   },
-  onStart: async ({ event, api, args, message }) => {
+
+  onStart: async function ({ event, api, args, message }) {
+    const query = args.join(" ").trim();
+    if (!query) return message.reply("Usage: .song <name>\nExample: .song Shape of You");
+
+    const cacheDir = path.join(__dirname, "cache");
+    if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+
+    await message.reply(`👻 Ghost Bot searching: "${query}"\n🎵 Please wait...`);
+    api.setMessageReaction("⏳", event.messageID, () => {}, true);
+
     try {
-      const query = args.join(' ');
-      if (!query) return message.reply('Please provide a search query!');
-      
-      const searchResponse = await axios.get(`https://mostakim.onrender.com/mostakim/ytSearch?search=${encodeURIComponent(query)}`);
-      api.setMessageReaction("⏳", event.messageID, () => {}, true);
+      let audioUrl = null;
+      let title = query;
 
-      const parseDuration = (timestamp) => {
-        const parts = timestamp.split(':').map(part => parseInt(part));
-        let seconds = 0;
-
-        if (parts.length === 3) {
-          seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
-        } else if (parts.length === 2) {
-          seconds = parts[0] * 60 + parts[1];
+      // Try saavncdn (JioSaavn API)
+      try {
+        const searchRes = await axios.get(
+          `https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}&page=1&limit=3`,
+          { timeout: 10000 }
+        );
+        const song = searchRes.data?.data?.results?.[0];
+        if (song?.downloadUrl?.length) {
+          const urls = song.downloadUrl;
+          audioUrl = urls.find(u => u.quality === "320kbps")?.url || urls[urls.length - 1]?.url;
+          title = song.name || query;
         }
+      } catch (e) {}
 
-        return seconds;
-      };
-
-      const filteredVideos = searchResponse.data.filter(video => {
+      // Fallback: YouTube audio via @distube/ytdl-core
+      if (!audioUrl) {
         try {
-          const totalSeconds = parseDuration(video.timestamp);
-          return totalSeconds < 600;
-        } catch {
-          return false;
-        }
-      });
-
-      if (filteredVideos.length === 0) {
-        return message.reply('No short videos found (under 10 minutes)!');
+          const ytSearch = await axios.get(
+            `https://api.popcat.xyz/youtube/search?q=${encodeURIComponent(query + " audio")}`,
+            { timeout: 10000 }
+          );
+          const ytVideo = ytSearch.data?.[0];
+          if (ytVideo?.id) {
+            const cobaltRes = await axios.post(
+              "https://api.cobalt.tools/api/json",
+              { url: `https://www.youtube.com/watch?v=${ytVideo.id}`, isAudioOnly: true, aFormat: "mp3" },
+              { headers: { "Content-Type": "application/json", "Accept": "application/json" }, timeout: 20000 }
+            );
+            if (cobaltRes.data?.url) {
+              audioUrl = cobaltRes.data.url;
+              title = ytVideo.title || query;
+            }
+          }
+        } catch (e) {}
       }
 
-      const selectedVideo = filteredVideos[0];
-      const tempFilePath = path.join(__dirname, 'temp_audio.m4a');
-      const apiResponse = await axios.get(`https://mostakim.onrender.com/m/sing?url=${selectedVideo.url}`);
-      
-      if (!apiResponse.data.url) {
-        throw new Error('No audio URL found in response');
+      if (!audioUrl) {
+        api.setMessageReaction("❌", event.messageID, () => {}, true);
+        return message.reply(`❌ Could not find "${query}". Try:\n.ytb mp3 ${query}`);
       }
 
-      const writer = fs.createWriteStream(tempFilePath);
-      const audioResponse = await axios({
-        url: apiResponse.data.url,
-        method: 'GET',
-        responseType: 'stream'
-      });
-
-      audioResponse.data.pipe(writer);
-      
-      await new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-      });
+      const filePath = path.join(cacheDir, `song_${Date.now()}.mp3`);
+      const dlRes = await axios({ url: audioUrl, method: "GET", responseType: "stream", timeout: 60000 });
+      const writer = fs.createWriteStream(filePath);
+      dlRes.data.pipe(writer);
+      await new Promise((r, j) => { writer.on("finish", r); writer.on("error", j); });
 
       api.setMessageReaction("✅", event.messageID, () => {}, true);
 
       await message.reply({
-        body: `🎧 Now playing: ${selectedVideo.title}\nDuration: ${selectedVideo.timestamp}`,
-        attachment: fs.createReadStream(tempFilePath)
+        body: `👻 𝗚𝗛𝗢𝗦𝗧 𝗕𝗢𝗧 𝗠𝗨𝗦𝗜𝗖\n━━━━━━━━━━━━━━━━\n🎵 ${title}\n━━━━━━━━━━━━━━━━\n— Rakib Islam | Ghost Bot`,
+        attachment: fs.createReadStream(filePath)
       });
 
-      fs.unlink(tempFilePath, (err) => {
-        if (err) message.reply(`Error deleting temp file: ${err.message}`);
-      });
-
-    } catch (error) {
-      message.reply(`Error: ${error.message}`);
+      setTimeout(() => { try { fs.unlinkSync(filePath); } catch (e) {} }, 15000);
+    } catch (err) {
+      api.setMessageReaction("❌", event.messageID, () => {}, true);
+      message.reply(`❌ Error: ${err.message}`);
     }
   }
 };
