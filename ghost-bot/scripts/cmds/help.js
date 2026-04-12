@@ -1,6 +1,6 @@
 const axios = require("axios");
 const { getPrefix } = global.utils;
-const { commands } = global.Ghost Bot;
+const { commands } = global.GoatBot;
 
 let xfont = null;
 let yfont = null;
@@ -57,7 +57,7 @@ module.exports = {
     name: "help",
     aliases: ["menu"],
     version: "2.0",
-    author: "Saimx69x | fixed by Aphelion",
+    author: "Rakib Islam",
     role: 0,
     category: "info",
     shortDescription: "Show all commands",
@@ -114,7 +114,7 @@ module.exports = {
       msg += `\n━━━━━━━━━━━━━━\n`;
       msg += `🔢 Total Commands: ${total}\n`;
       msg += `⚡ Prefix: ${prefix}\n`;
-      msg += `👑 Owner: Aphelion`;
+      msg += `👑 Owner: Rakib Islam | Ghost Bot`;
 
       return message.reply(msg);
     }
