@@ -1,6 +1,6 @@
 const axios = require("axios");
 const { getPrefix } = global.utils;
-const { commands } = global.GoatBot;
+const { commands } = global.Ghost Bot;
 
 let xfont = null;
 let yfont = null;

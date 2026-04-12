@@ -48,12 +48,12 @@ module.exports = {
 
       try {
         await api.sendMessage(
-          `✓ Group Approved\n\n📜 Type ${global.GoatBot.config.prefix}help to See Cmds!`,
+          `✓ Group Approved\n\n📜 Type ${global.Ghost Bot.config.prefix}help to See Cmds!`,
           group.threadID
         );
 
         await api.changeNickname(
-          `${global.GoatBot.config.nickNameBot || "🌬️ Raven Ai ✨"}`,
+          `${global.Ghost Bot.config.nickNameBot || "🌬️ Raven Ai ✨"}`,
           group.threadID,
           api.getCurrentUserID()
         );
@@ -79,7 +79,7 @@ module.exports = {
 
   onStart: async function ({ api, event, args, usersData }) {
     const { threadID, messageID } = event;
-    const adminBot = global.GoatBot.config.adminBot;
+    const adminBot = global.Ghost Bot.config.adminBot;
 
     if (!adminBot.includes(event.senderID)) {
       return api.sendMessage(
@@ -125,7 +125,7 @@ module.exports = {
           .toUpperCase()}${type.slice(1)} List ✨ ]\n\n${msg}`,
         threadID,
         (error, info) => {
-          global.GoatBot.onReply.set(info.messageID, {
+          global.Ghost Bot.onReply.set(info.messageID, {
             commandName: this.config.name,
             messageID: info.messageID,
             author: event.senderID,

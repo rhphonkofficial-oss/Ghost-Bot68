@@ -49,7 +49,7 @@ module.exports = {
       };
 
       api.sendMessage(quizMsg, event.threadID, (error, info) => {
-        global.GoatBot.onReply.set(info.messageID, {
+        global.Ghost Bot.onReply.set(info.messageID, {
           type: "reply",
           commandName: this.config.name,
           author: event.senderID,

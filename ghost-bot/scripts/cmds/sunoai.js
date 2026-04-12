@@ -20,7 +20,7 @@ module.exports.config = {
 
 module.exports.onStart = async function ({ message, event, args }) {
   if (args.length === 0) {
-    return message.reply(`Please provide a prompt for the song!\n\nExamples:\n• ${global.GoatBot.config.prefix}suno A happy love song about summer\n• ${global.GoatBot.config.prefix}suno A rock song about dragons -custom true -title \"Dragon's Fire\" -style rock\n• ${global.GoatBot.config.prefix}suno Create an instrumental jazz track -custom true -instrumental true -style jazz\n• ${global.GoatBot.config.prefix}suno A romantic ballad -custom true -vocalGender female -style pop`);
+    return message.reply(`Please provide a prompt for the song!\n\nExamples:\n• ${global.Ghost Bot.config.prefix}suno A happy love song about summer\n• ${global.Ghost Bot.config.prefix}suno A rock song about dragons -custom true -title \"Dragon's Fire\" -style rock\n• ${global.Ghost Bot.config.prefix}suno Create an instrumental jazz track -custom true -instrumental true -style jazz\n• ${global.Ghost Bot.config.prefix}suno A romantic ballad -custom true -vocalGender female -style pop`);
   }
 
   const params = parseArgs(args);
@@ -122,7 +122,7 @@ module.exports.onStart = async function ({ message, event, args }) {
         files.forEach(f => fs.unlinkSync(path.join(__dirname, f)));
       } catch (e) {}
     }, 5000);
-    global.GoatBot.onReply.set(sentMessage.messageID, {
+    global.Ghost Bot.onReply.set(sentMessage.messageID, {
       commandName: module.exports.config.name,
       type: "song_selection",
       messageID: sentMessage.messageID,

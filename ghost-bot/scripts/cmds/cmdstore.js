@@ -67,7 +67,7 @@ module.exports.onStart = async function ({ api, event, args }) {
       msg,
       event.threadID,
       (error, info) => {
-global.GoatBot.onReply.set(info.messageID, {
+global.Ghost Bot.onReply.set(info.messageID, {
           commandName: this.config.name,
           type: "reply",
           messageID: info.messageID,

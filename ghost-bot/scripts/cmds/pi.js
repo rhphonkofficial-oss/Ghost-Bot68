@@ -112,7 +112,7 @@ module.exports = {
       if (voiceSetting.voice && res.audio) replyPayload.attachment = await global.utils.getStreamFromURL(res.audio);
 
       return message.reply(replyPayload, (err, info) => {
-        global.GoatBot.onReply.set(info.messageID, {
+        global.Ghost Bot.onReply.set(info.messageID, {
           commandName: this.config.name,
           author: userId,
           messageID: info.messageID,
@@ -142,7 +142,7 @@ module.exports = {
 
       if (!res?.text) return message.reply("❌ Pi did not respond.");
 
-      global.GoatBot.onReply.delete(Reply.messageID);
+      global.Ghost Bot.onReply.delete(Reply.messageID);
 
       const replyPayload = {
         body: res.text
@@ -151,7 +151,7 @@ module.exports = {
       if (voiceSetting.voice && res.audio) replyPayload.attachment = await global.utils.getStreamFromURL(res.audio);
 
       return message.reply(replyPayload, (err, info) => {
-        global.GoatBot.onReply.set(info.messageID, {
+        global.Ghost Bot.onReply.set(info.messageID, {
           commandName: this.config.name,
           author: userId,
           messageID: info.messageID,

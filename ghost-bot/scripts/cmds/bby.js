@@ -115,7 +115,7 @@ module.exports.onStart = async ({
 
         const d = (await axios.get(`${link}?text=${dipto}&senderID=${uid}&font=1`)).data.reply;
         api.sendMessage(d, event.threadID, (error, info) => {
-            global.GoatBot.onReply.set(info.messageID, {
+            global.Ghost Bot.onReply.set(info.messageID, {
                 commandName: this.config.name,
                 type: "reply",
                 messageID: info.messageID,
@@ -143,7 +143,7 @@ module.exports.onReply = async ({
         if (event.type == "message_reply") {
             const a = (await axios.get(`${await baseApiUrl()}/baby?text=${encodeURIComponent(event.body?.toLowerCase())}&senderID=${event.senderID}&font=1`)).data.reply;
             await api.sendMessage(a, event.threadID, (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
+                global.Ghost Bot.onReply.set(info.messageID, {
                     commandName: this.config.name,
                     type: "reply",
                     messageID: info.messageID,
@@ -171,7 +171,7 @@ module.exports.onChat = async ({
 
                 await api.sendMessage(randomReplies[Math.floor(Math.random() * randomReplies.length)], event.threadID, (error, info) => {
                     if (!info) message.reply("info obj not found")
-                    global.GoatBot.onReply.set(info.messageID, {
+                    global.Ghost Bot.onReply.set(info.messageID, {
                         commandName: this.config.name,
                         type: "reply",
                         messageID: info.messageID,
@@ -181,7 +181,7 @@ module.exports.onChat = async ({
             }
             const a = (await axios.get(`${await baseApiUrl()}/baby?text=${encodeURIComponent(arr)}&senderID=${event.senderID}&font=1`)).data.reply;
             await api.sendMessage(a, event.threadID, (error, info) => {
-                global.GoatBot.onReply.set(info.messageID, {
+                global.Ghost Bot.onReply.set(info.messageID, {
                     commandName: this.config.name,
                     type: "reply",
                     messageID: info.messageID,

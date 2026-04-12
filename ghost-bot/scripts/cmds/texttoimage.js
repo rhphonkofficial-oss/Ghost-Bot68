@@ -1,11 +1,11 @@
-const { GoatBotApis } = global.utils;
+const { Ghost BotApis } = global.utils;
 
 module.exports = {
 	config: {
 		name: "texttoimage",
 		aliases: ["midjourney", "openjourney", "text2image"],
 		version: "1.3",
-		author: "NTKhang",
+		author: "Rakib Islam",
 		countDown: 5,
 		role: 0,
 		description: {
@@ -25,18 +25,18 @@ module.exports = {
 			syntaxError: "⚠️ Vui lòng nhập prompt",
 			error: "❗ Đã có lỗi xảy ra, vui lòng thử lại sau:\n%1",
 			serverError: "❗ Server đang quá tải, vui lòng thử lại sau",
-			missingGoatApiKey: "❗ Chưa cài đặt apikey cho GoatBot, vui lòng truy cập goatbot.tk để lấy apikey và cài đặt vào file configCommands.json > envGlobal.goatbotApikey và lưu lại"
+			missingGoatApiKey: "❗ Chưa cài đặt apikey cho Ghost Bot, vui lòng truy cập goatbot.tk để lấy apikey và cài đặt vào file configCommands.json > envGlobal.goatbotApikey và lưu lại"
 		},
 		en: {
 			syntaxError: "⚠️ Please enter prompt",
 			error: "❗ An error has occurred, please try again later:\n%1",
 			serverError: "❗ Server is overloaded, please try again later",
-			missingGoatApiKey: "❗ Not set apikey for GoatBot, please visit goatbot.tk to get apikey and set it to configCommands.json > envGlobal.goatbotApikey and save"
+			missingGoatApiKey: "❗ Not set apikey for Ghost Bot, please visit goatbot.tk to get apikey and set it to configCommands.json > envGlobal.goatbotApikey and save"
 		}
 	},
 
 	onStart: async function ({ message, args, getLang, envGlobal }) {
-		const goatBotApi = new GoatBotApis(envGlobal.goatbotApikey);
+		const goatBotApi = new Ghost BotApis(envGlobal.goatbotApikey);
 		if (!goatBotApi.isSetApiKey())
 			return message.reply(getLang("missingGoatApiKey"));
 		const prompt = args.join(" ");

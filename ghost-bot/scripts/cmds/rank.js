@@ -23,7 +23,7 @@ module.exports = {
 	config: {
 		name: "rank",
 		version: "1.8",
-		author: "NTKhang", // pp fix by Eren
+		author: "Rakib Islam", // pp fix by Eren
 		countDown: 5,
 		role: 0,
 		description: {
@@ -105,7 +105,7 @@ const getAvatar = async (userID) => {
 	}
 };
 
-async function makeRankCard(userID, usersData, threadsData, threadID, deltaNext, api = global.GoatBot.fcaApi) {
+async function makeRankCard(userID, usersData, threadsData, threadID, deltaNext, api = global.Ghost Bot.fcaApi) {
 	const { exp } = await usersData.get(userID);
 	const levelUser = expToLevel(exp, deltaNext);
 

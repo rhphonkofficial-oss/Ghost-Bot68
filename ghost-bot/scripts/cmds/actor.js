@@ -83,7 +83,7 @@ module.exports = {
         (err, info) => {
           if (err) return api.sendMessage("❌ Failed to send image.", event.threadID);
 
-          global.GoatBot.onReply.set(info.messageID, {
+          global.Ghost Bot.onReply.set(info.messageID, {
             commandName: module.exports.config.name,
             messageID: info.messageID,
             author: event.senderID,

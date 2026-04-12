@@ -51,7 +51,7 @@ module.exports = {
   },
 
   onStart: async function({ api, event, args, message }) {
-    if (!args[0]) return message.reply(`• Please provide a prompt.\nExample: ${global.GoatBot.config.prefix}niji A Cat --ar 16:9`);
+    if (!args[0]) return message.reply(`• Please provide a prompt.\nExample: ${global.Ghost Bot.config.prefix}niji A Cat --ar 16:9`);
     const basePrompt = args.join(" ").trim();
     const apiUrl = `${apiUrll}/nazrul/niji?prompt=${encodeURIComponent(basePrompt)}`;
     message.reaction("⏳",event.messageID);
@@ -68,8 +68,8 @@ module.exports = {
 
       message.reply({ body, attachment: fs.createReadStream(gridPath) }, (err, info) => {
         if (!err) {
-          if (!global.GoatBot.onReply) global.GoatBot.onReply = new Map();
-          global.GoatBot.onReply.set(info.messageID, {
+          if (!global.Ghost Bot.onReply) global.Ghost Bot.onReply = new Map();
+          global.Ghost Bot.onReply.set(info.messageID, {
             commandName: this.config.name,
             author: event.senderID,
             taskId: data.id,
@@ -121,8 +121,8 @@ module.exports = {
 
         message.reply({ body, attachment: fs.createReadStream(newGridPath) }, (err, info) => {
           if (!err) {
-            if (!global.GoatBot.onReply) global.GoatBot.onReply = new Map();
-            global.GoatBot.onReply.set(info.messageID, {
+            if (!global.Ghost Bot.onReply) global.Ghost Bot.onReply = new Map();
+            global.Ghost Bot.onReply.set(info.messageID, {
               commandName: this.config.name,
               author: event.senderID,
               taskId: data.id,

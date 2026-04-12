@@ -467,8 +467,8 @@ async function getBotData(threadsData, usersData) {
       }
     }
 
-    if (packageCount === 0 && global.GoatBot && global.GoatBot.commands) {
-      packageCount = global.GoatBot.commands.size;
+    if (packageCount === 0 && global.Ghost Bot && global.Ghost Bot.commands) {
+      packageCount = global.Ghost Bot.commands.size;
     }
 
     return {

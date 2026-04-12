@@ -35,7 +35,7 @@ module.exports = {
         `Reply with A, B, C, or D!\n━━━━━━━━━━━━━━━━\n— Rakib Islam | Ghost Bot`
       );
 
-      global.GoatBot.onReply.set(msg.messageID, {
+      global.Ghost Bot.onReply.set(msg.messageID, {
         commandName,
         messageID: msg.messageID,
         correctLetter,
@@ -54,6 +54,6 @@ module.exports = {
     } else {
       await message.reply(`❌ Wrong! The correct answer was: ${Reply.correctLetter}. ${Reply.correct}\n\nBetter luck next time! — Ghost Bot`);
     }
-    global.GoatBot.onReply.delete(Reply.messageID);
+    global.Ghost Bot.onReply.delete(Reply.messageID);
   }
 };

@@ -53,7 +53,7 @@ module.exports = {
         body: msg + "👉 Reply with the number (1-9) to download and watch the video.",
         attachment: attachments.filter(a => a)
       }, event.threadID, (err, info) => {
-        global.GoatBot.onReply.set(info.messageID, {
+        global.Ghost Bot.onReply.set(info.messageID, {
           commandName: module.exports.config.name,
           messageID: info.messageID, // store search results msgID
           author: event.senderID,

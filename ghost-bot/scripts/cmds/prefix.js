@@ -62,7 +62,7 @@ module.exports = {
 
     if (args[0] === "reset") {
       await threadsData.set(event.threadID, null, "data.prefix");
-      return message.reply(getLang("reset", global.GoatBot.config.prefix));
+      return message.reply(getLang("reset", global.Ghost Bot.config.prefix));
     }
 
     const newPrefix = args[0];
@@ -80,7 +80,7 @@ module.exports = {
     const confirmMessage = formSet.setGlobal ? getLang("confirmGlobal") : getLang("confirmThisThread");
     return message.reply(confirmMessage, (err, info) => {
       formSet.messageID = info.messageID;
-      global.GoatBot.onReaction.set(info.messageID, formSet);
+      global.Ghost Bot.onReaction.set(info.messageID, formSet);
     });
   },
 
@@ -89,8 +89,8 @@ module.exports = {
     if (event.userID !== author) return;
 
     if (setGlobal) {
-      global.GoatBot.config.prefix = newPrefix;
-      fs.writeFileSync(global.client.dirConfig, JSON.stringify(global.GoatBot.config, null, 2));
+      global.Ghost Bot.config.prefix = newPrefix;
+      fs.writeFileSync(global.client.dirConfig, JSON.stringify(global.Ghost Bot.config, null, 2));
       return message.reply(getLang("successGlobal", newPrefix));
     }
 
@@ -99,7 +99,7 @@ module.exports = {
   },
 
   onChat: async function ({ event, message, threadsData }) {
-    const globalPrefix = global.GoatBot.config.prefix;
+    const globalPrefix = global.Ghost Bot.config.prefix;
     const threadPrefix = await threadsData.get(event.threadID, "data.prefix") || globalPrefix;
 
     if (event.body && event.body.toLowerCase() === "prefix") {

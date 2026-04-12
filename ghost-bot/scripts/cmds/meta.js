@@ -139,7 +139,7 @@ module.exports = {
                 attachment: fs.createReadStream(gridPath)
             }, (err, info) => {
                 if (!err) {
-                    global.GoatBot.onReply.set(info.messageID, {
+                    global.Ghost Bot.onReply.set(info.messageID, {
                         commandName,
                         messageID: info.messageID,
                         author: event.senderID,
@@ -261,7 +261,7 @@ module.exports = {
             };
             cleanup().catch(console.error);
 
-            global.GoatBot.onReply.delete(Reply.messageID);
+            global.Ghost Bot.onReply.delete(Reply.messageID);
         }
     }
 };

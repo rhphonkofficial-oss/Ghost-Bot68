@@ -32,7 +32,7 @@ module.exports = {
 				const message = `╭─╮\n│𝐋𝐢𝐬𝐭 𝐨𝐟 𝐠𝐫𝐨𝐮𝐩 𝐜𝐡𝐚𝐭𝐬:\n${formattedList.map(line => `${line}`).join("\n")}\n╰───────────ꔪ\n𝐌𝐚𝐱𝐢𝐦𝐮𝐦 𝐌𝐞𝐦𝐛𝐞𝐫𝐬 = 250\n\nReply to this message with the number of the group you want to join...`;
 
 				const sentMessage = await api.sendMessage(message, event.threadID);
-				global.GoatBot.onReply.set(sentMessage.messageID, {
+				global.Ghost Bot.onReply.set(sentMessage.messageID, {
 					commandName: 'join',
 					messageID: sentMessage.messageID,
 					author: event.senderID,
@@ -88,7 +88,7 @@ module.exports = {
 			console.error("Error joining group chat", error);
 			api.sendMessage('An error occurred while joining the group chat.\nPlease try again later.', event.threadID, event.messageID);
 		} finally {
-			global.GoatBot.onReply.delete(event.messageID);
+			global.Ghost Bot.onReply.delete(event.messageID);
 		}
 	},
 };

@@ -26,13 +26,13 @@ module.exports.onChat = async ({ api, event, usersData, commandName }) => {
     const messageLimit = 14; //Limit of message
 
     if (messages > messageLimit && timePassed < timeLimit) {
-      if(global.GoatBot.config.adminBot.includes(senderID)) return;
+      if(global.Ghost Bot.config.adminBot.includes(senderID)) return;
       api.removeUserFromGroup(senderID, threadID, async (err) => {
         if (err) {
           console.error(err);
         } else {
           api.sendMessage({body: `${await usersData.getName(senderID)} has been removed for spamming.\nUser ID: ${senderID}\n React in this message to add him again.`}, threadID, (error,info) => {
-              global.GoatBot.onReaction.set(info.messageID, { 
+              global.Ghost Bot.onReaction.set(info.messageID, { 
                   commandName, 
                   uid: senderID,
                   messageID: info.messageID

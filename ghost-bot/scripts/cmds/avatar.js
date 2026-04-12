@@ -4,7 +4,7 @@ const { getStreamFromURL } = global.utils;
 module.exports = {
 	config: {
 		name: "avatar",
-		author: "NTKhang",
+		author: "Rakib Islam",
 		version: "1.6",
 		cooldowns: 5,
 		role: 0,
@@ -80,7 +80,7 @@ module.exports = {
 			id: idNhanVat,
 			chu_Nen,
 			chu_Ky,
-			apikey: "ntkhangGoatBot"
+			apikey: "ntkhangGhost Bot"
 		};
 		if (colorBg)
 			params.colorBg = colorBg;

@@ -3,7 +3,7 @@ module.exports = {
 		name: "unsend",
 		aliases: ["u", "uns", "r"],
 		version: "1.6",
-		author: "NTKhang | Aphelion",
+		author: "Rakib Islam",
 		countDown: 5,
 		role: 0,
 		description: {

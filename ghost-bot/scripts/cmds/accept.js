@@ -118,7 +118,7 @@ module.exports = {
         + `\nTime: ${moment(user.time * 1009).tz("Asia/Manila").format("DD/MM/YYYY HH:mm:ss")}\n`);
     }
     api.sendMessage(`${msg}\nReply to this message with content: <add: del> <comparison: or "all"> to take action`, event.threadID, (e, info) => {
-      global.GoatBot.onReply.set(info.messageID, {
+      global.Ghost Bot.onReply.set(info.messageID, {
         commandName,
         messageID: info.messageID,
         listRequest,

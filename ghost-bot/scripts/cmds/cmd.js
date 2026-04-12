@@ -5,7 +5,7 @@ const path = require("path");
 const cheerio = require("cheerio");
 const { client } = global;
 
-const { configCommands } = global.GoatBot;
+const { configCommands } = global.Ghost Bot;
 const { log, loading, removeHomeDir } = global.utils;
 
 function getDomain(url) {
@@ -28,7 +28,7 @@ module.exports = {
 	config: {
 		name: "cmd",
 		version: "1.17",
-		author: "NTKhang",
+		author: "Rakib Islam",
 		countDown: 5,
 		role: 2,
 		description: {
@@ -222,7 +222,7 @@ module.exports = {
 
 			if (fs.existsSync(path.join(__dirname, fileName)))
 				return message.reply(getLang("alreadExist"), (err, info) => {
-					global.GoatBot.onReaction.set(info.messageID, {
+					global.Ghost Bot.onReaction.set(info.messageID, {
 						commandName,
 						messageID: info.messageID,
 						type: "install",
@@ -262,11 +262,11 @@ const spinner = "\\|/-";
 let count = 0;
 
 function loadScripts(folder, fileName, log, configCommands, api, threadModel, userModel, dashBoardModel, globalModel, threadsData, usersData, dashBoardData, globalData, getLang, rawCode) {
-	// global.GoatBot[folderModules == "cmds" ? "commandFilesPath" : "eventCommandsFilesPath"].push({
+	// global.Ghost Bot[folderModules == "cmds" ? "commandFilesPath" : "eventCommandsFilesPath"].push({
 	// 	filePath: pathCommand,
 	// 	commandName: [commandName, ...validAliases]
 	// });
-	const storageCommandFilesPath = global.GoatBot[folder == "cmds" ? "commandFilesPath" : "eventCommandsFilesPath"];
+	const storageCommandFilesPath = global.Ghost Bot[folder == "cmds" ? "commandFilesPath" : "eventCommandsFilesPath"];
 
 	try {
 		if (rawCode) {
@@ -274,8 +274,8 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 			fs.writeFileSync(path.normalize(`${process.cwd()}/scripts/${folder}/${fileName}.js`), rawCode);
 		}
 		const regExpCheckPackage = /require(\s+|)\((\s+|)[`'"]([^`'"]+)[`'"](\s+|)\)/g;
-		const { GoatBot } = global;
-		const { onFirstChat: allOnFirstChat, onChat: allOnChat, onEvent: allOnEvent, onAnyEvent: allOnAnyEvent } = GoatBot;
+		const { Ghost Bot } = global;
+		const { onFirstChat: allOnFirstChat, onChat: allOnChat, onEvent: allOnEvent, onAnyEvent: allOnAnyEvent } = Ghost Bot;
 		let setMap, typeEnvCommand, commandType;
 		if (folder == "cmds") {
 			typeEnvCommand = "envCommands";
@@ -342,8 +342,8 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 		const oldCommandName = oldCommand?.config?.name;
 		// —————————————— CHECK COMMAND EXIST ——————————————— //
 		if (!oldCommandName) {
-			if (GoatBot[setMap].get(oldCommandName)?.location != pathCommand)
-				throw new Error(`${commandType} name "${oldCommandName}" is already exist in command "${removeHomeDir(GoatBot[setMap].get(oldCommandName)?.location || "")}"`);
+			if (Ghost Bot[setMap].get(oldCommandName)?.location != pathCommand)
+				throw new Error(`${commandType} name "${oldCommandName}" is already exist in command "${removeHomeDir(Ghost Bot[setMap].get(oldCommandName)?.location || "")}"`);
 		}
 		// ————————————————— CHECK ALIASES ————————————————— //
 		if (oldCommand.config.aliases) {
@@ -351,7 +351,7 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 			if (typeof oldAliases == "string")
 				oldAliases = [oldAliases];
 			for (const alias of oldAliases)
-				GoatBot.aliases.delete(alias);
+				Ghost Bot.aliases.delete(alias);
 		}
 		// ——————————————— DELETE OLD COMMAND ——————————————— //
 		delete require.cache[require.resolve(pathCommand)];
@@ -410,9 +410,9 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 			for (const alias of aliases) {
 				if (aliases.filter(item => item == alias).length > 1)
 					throw new Error(`alias "${alias}" duplicate in ${commandType} "${scriptName}" with file name "${removeHomeDir(pathCommand || "")}"`);
-				if (GoatBot.aliases.has(alias))
-					throw new Error(`alias "${alias}" is already exist in ${commandType} "${GoatBot.aliases.get(alias)}" with file name "${removeHomeDir(GoatBot[setMap].get(GoatBot.aliases.get(alias))?.location || "")}"`);
-				GoatBot.aliases.set(alias, scriptName);
+				if (Ghost Bot.aliases.has(alias))
+					throw new Error(`alias "${alias}" is already exist in ${commandType} "${Ghost Bot.aliases.get(alias)}" with file name "${removeHomeDir(Ghost Bot[setMap].get(Ghost Bot.aliases.get(alias))?.location || "")}"`);
+				Ghost Bot.aliases.set(alias, scriptName);
 			}
 		}
 		// ————————————————— CHECK ENVCONFIG ————————————————— //
@@ -429,8 +429,8 @@ function loadScripts(folder, fileName, log, configCommands, api, threadModel, us
 				configCommands[typeEnvCommand][scriptName] = {};
 			configCommands[typeEnvCommand][scriptName] = envConfig;
 		}
-		GoatBot[setMap].delete(oldCommandName);
-		GoatBot[setMap].set(scriptName, command);
+		Ghost Bot[setMap].delete(oldCommandName);
+		Ghost Bot[setMap].set(scriptName, command);
 		fs.writeFileSync(client.dirConfigCommands, JSON.stringify(configCommands, null, 2));
 		const keyUnloadCommand = folder == "cmds" ? "commandUnload" : "commandEventUnload";
 		const findIndex = (configCommands[keyUnloadCommand] || []).indexOf(`${fileName}.js`);
@@ -493,8 +493,8 @@ function unloadScripts(folder, fileName, configCommands, getLang) {
 	const commandName = command.config?.name;
 	if (!commandName)
 		throw new Error(getLang("invalidFileName", `${fileName}.js`));
-	const { GoatBot } = global;
-	const { onChat: allOnChat, onEvent: allOnEvent, onAnyEvent: allOnAnyEvent } = GoatBot;
+	const { Ghost Bot } = global;
+	const { onChat: allOnChat, onEvent: allOnEvent, onAnyEvent: allOnAnyEvent } = Ghost Bot;
 	const indexOnChat = allOnChat.findIndex(item => item == commandName);
 	if (indexOnChat != -1)
 		allOnChat.splice(indexOnChat, 1);
@@ -510,11 +510,11 @@ function unloadScripts(folder, fileName, configCommands, getLang) {
 		if (typeof aliases == "string")
 			aliases = [aliases];
 		for (const alias of aliases)
-			GoatBot.aliases.delete(alias);
+			Ghost Bot.aliases.delete(alias);
 	}
 	const setMap = folder == "cmds" ? "commands" : "eventCommands";
 	delete require.cache[require.resolve(pathCommand)];
-	GoatBot[setMap].delete(commandName);
+	Ghost Bot[setMap].delete(commandName);
 	log.master("UNLOADED", getLang("unloaded", commandName));
 	const commandUnload = configCommands[folder == "cmds" ? "commandUnload" : "commandEventUnload"] || [];
 	if (!commandUnload.includes(`${fileName}.js`))

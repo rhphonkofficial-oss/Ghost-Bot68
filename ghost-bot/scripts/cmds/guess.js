@@ -41,7 +41,7 @@ module.exports = {
       const gameMsg = `Guess this handsome character:\n\nTraits: ${traits}\nTags: ${tags}`;
       const sentMsg = await message.reply({ body: gameMsg, attachment: imageStream });
 
-      global.GoatBot.onReply.set(sentMsg.messageID, {
+      global.Ghost Bot.onReply.set(sentMsg.messageID, {
         commandName: this.config.name,
         messageID: sentMsg.messageID,
         correctAnswer: [fullName, firstName],

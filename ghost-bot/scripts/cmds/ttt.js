@@ -112,8 +112,8 @@ module.exports = {
 
   onStart: async function ({ message, args, event, usersData }) {
     const { threadID, senderID, mentions } = event;
-    global.GoatBot.tictactoe ??= new Map();
-    global.GoatBot.tictactoeMultiplayer ??= new Map();
+    global.Ghost Bot.tictactoe ??= new Map();
+    global.Ghost Bot.tictactoeMultiplayer ??= new Map();
 
     // Multiplayer Mode
     if (args[0] === "--mode" && args[1] === "2") {
@@ -121,7 +121,7 @@ module.exports = {
       if (!mentionID || mentionID === senderID)
         return message.reply("Please mention a valid user to challenge!");
 
-      if (global.GoatBot.tictactoeMultiplayer.has(threadID))
+      if (global.Ghost Bot.tictactoeMultiplayer.has(threadID))
         return message.reply("A multiplayer game is already running in this thread!");
 
       const data = {
@@ -132,14 +132,14 @@ module.exports = {
         gameOn: true
       };
 
-      global.GoatBot.tictactoeMultiplayer.set(threadID, data);
+      global.Ghost Bot.tictactoeMultiplayer.set(threadID, data);
       const playerName = await usersData.getName(senderID);
       const opponentName = await usersData.getName(mentionID);
 
       return message.reply(
         `${playerName} challenged ${opponentName} to a Tic Tac Toe match!\n\n${playerName} goes first.\nReply with a number (1-9) to place your mark.`,
         async (err, info) => {
-          global.GoatBot.onReply.set(info.messageID, {
+          global.Ghost Bot.onReply.set(info.messageID, {
             commandName: "ttt",
             multiplayer: true,
             author: senderID,
@@ -152,23 +152,23 @@ module.exports = {
 
     // Delete game
     if (args[0] === "delete") {
-      global.GoatBot.tictactoe.delete(threadID);
-      global.GoatBot.tictactoeMultiplayer.delete(threadID);
+      global.Ghost Bot.tictactoe.delete(threadID);
+      global.Ghost Bot.tictactoeMultiplayer.delete(threadID);
       return message.reply("Game deleted.");
     }
 
     // AI Game
-    if (global.GoatBot.tictactoe.get(threadID)?.gameOn)
+    if (global.Ghost Bot.tictactoe.get(threadID)?.gameOn)
       return message.reply("An AI game is already running!");
 
     const isX = args[0] === "x";
     const data = startBoard(isX);
     if (!isX) AIStart(data);
 
-    global.GoatBot.tictactoe.set(threadID, data);
+    global.Ghost Bot.tictactoe.set(threadID, data);
     const img = await displayBoard(data);
     return message.reply({ body: "Game started vs AI!", attachment: img }, (err, info) => {
-      global.GoatBot.onReply.set(info.messageID, {
+      global.Ghost Bot.onReply.set(info.messageID, {
         commandName: "ttt",
         author: senderID,
         multiplayer: false
@@ -185,7 +185,7 @@ module.exports = {
     const col = (num - 1) % 3;
 
     if (Reply.multiplayer) {
-      const data = global.GoatBot.tictactoeMultiplayer.get(threadID);
+      const data = global.Ghost Bot.tictactoeMultiplayer.get(threadID);
       if (!data || !data.gameOn) return message.reply("No multiplayer game found.");
 
       if (senderID !== data.currentTurn)
@@ -199,13 +199,13 @@ module.exports = {
       let result = "";
       if (checkWin(data.board, 1)) {
         result = `${await usersData.getName(data.player1)} wins!`;
-        global.GoatBot.tictactoeMultiplayer.delete(threadID);
+        global.Ghost Bot.tictactoeMultiplayer.delete(threadID);
       } else if (checkWin(data.board, 2)) {
         result = `${await usersData.getName(data.player2)} wins!`;
-        global.GoatBot.tictactoeMultiplayer.delete(threadID);
+        global.Ghost Bot.tictactoeMultiplayer.delete(threadID);
       } else if (checkDraw(data)) {
         result = "Draw!";
-        global.GoatBot.tictactoeMultiplayer.delete(threadID);
+        global.Ghost Bot.tictactoeMultiplayer.delete(threadID);
       } else {
         data.currentTurn = data.currentTurn === data.player1 ? data.player2 : data.player1;
       }
@@ -213,7 +213,7 @@ module.exports = {
       const img = await displayBoard(data);
       return message.reply({ body: result || "Next turn!", attachment: img }, (err, info) => {
         if (!result)
-          global.GoatBot.onReply.set(info.messageID, {
+          global.Ghost Bot.onReply.set(info.messageID, {
             commandName: "ttt",
             multiplayer: true,
             player1: data.player1,
@@ -221,7 +221,7 @@ module.exports = {
           });
       });
     } else {
-      const data = global.GoatBot.tictactoe.get(threadID);
+      const data = global.Ghost Bot.tictactoe.get(threadID);
       if (!data || !data.gameOn) return;
 
       const res = movePlayer(row, col, data);
@@ -229,19 +229,19 @@ module.exports = {
 
       if (checkWin(data.board, 1)) {
         result = "AI wins!";
-        global.GoatBot.tictactoe.delete(threadID);
+        global.Ghost Bot.tictactoe.delete(threadID);
       } else if (checkWin(data.board, 2)) {
         result = "You win!";
-        global.GoatBot.tictactoe.delete(threadID);
+        global.Ghost Bot.tictactoe.delete(threadID);
       } else if (checkDraw(data)) {
         result = "Draw!";
-        global.GoatBot.tictactoe.delete(threadID);
+        global.Ghost Bot.tictactoe.delete(threadID);
       }
 
       const img = await displayBoard(data);
       return message.reply({ body: result || "Your move!", attachment: img }, (err, info) => {
         if (!result)
-          global.GoatBot.onReply.set(info.messageID, {
+          global.Ghost Bot.onReply.set(info.messageID, {
             commandName: "ttt",
             multiplayer: false,
             author: senderID

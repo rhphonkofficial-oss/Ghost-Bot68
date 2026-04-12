@@ -34,7 +34,7 @@ module.exports = {
 
       // Send episode list as a reply to the user's command message
       return api.sendMessage(msg, event.threadID, (err, info) => {
-        global.GoatBot.onReply.set(info.messageID, {
+        global.Ghost Bot.onReply.set(info.messageID, {
           commandName: this.config.name,
           messageID: info.messageID,
           author: event.senderID,

@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: "dhbc",
 		version: "1.3",
-		author: "NTKhang",
+		author: "Rakib Islam",
 		countDown: 5,
 		role: 0,
 		description: {
@@ -49,7 +49,7 @@ module.exports = {
 				await getStreamFromURL(image2)
 			]
 		}, (err, info) => {
-			global.GoatBot.onReply.set(info.messageID, {
+			global.Ghost Bot.onReply.set(info.messageID, {
 				commandName,
 				messageID: info.messageID,
 				author: event.senderID,
@@ -64,7 +64,7 @@ module.exports = {
 			return message.reply(getLang("notPlayer"));
 
 		if (formatText(event.body) == formatText(wordcomplete)) {
-			global.GoatBot.onReply.delete(messageID);
+			global.Ghost Bot.onReply.delete(messageID);
 			await usersData.addMoney(event.senderID, envCommands[commandName].reward);
 			message.reply(getLang("correct", envCommands[commandName].reward));
 		}

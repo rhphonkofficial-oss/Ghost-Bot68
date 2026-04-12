@@ -40,7 +40,7 @@ module.exports = {
 
       api.sendMessage(reply, event.threadID, (err, i) => {
         if (!i) return;
-        global.GoatBot.onReply.set(i.messageID, { commandName: this.config.name, author: event.senderID, baseApi: e });
+        global.Ghost Bot.onReply.set(i.messageID, { commandName: this.config.name, author: event.senderID, baseApi: e });
       }, event.messageID);
 
     } catch (error) {
@@ -68,7 +68,7 @@ module.exports = {
 
       api.sendMessage(reply, event.threadID, (err, i) => {
         if (!i) return;
-        global.GoatBot.onReply.set(i.messageID, { commandName: this.config.name, author: event.senderID, baseApi: e });
+        global.Ghost Bot.onReply.set(i.messageID, { commandName: this.config.name, author: event.senderID, baseApi: e });
       }, event.messageID);
 
     } catch (error) {

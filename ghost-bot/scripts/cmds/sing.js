@@ -205,7 +205,7 @@ async function searchSong(message, event, query) {
     message.reply({ body: txt, attachment: thumbs }, (err, info) => {
       if (err) return;
 
-      global.GoatBot.onReply.set(info.messageID, {
+      global.Ghost Bot.onReply.set(info.messageID, {
         commandName: module.exports.config.name,
         type: "search",
         messageID: info.messageID,

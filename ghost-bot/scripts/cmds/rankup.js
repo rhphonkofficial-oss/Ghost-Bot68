@@ -1,4 +1,4 @@
-const deltaNext = global.GoatBot.configCommands.envCommands.rank.deltaNext;
+const deltaNext = global.Ghost Bot.configCommands.envCommands.rank.deltaNext;
 const expToLevel = exp => Math.floor((1 + Math.sqrt(1 + 8 * exp / deltaNext)) / 2);
 const { drive } = global.utils;
 
@@ -6,7 +6,7 @@ module.exports = {
 	config: {
 		name: "rankup",
 		version: "1.4",
-		author: "NTKhang",
+		author: "Rakib Islam",
 		countDown: 5,
 		role: 0,
 		description: {
