@@ -339,8 +339,13 @@ function loginHelper(appState, email, password, globalOptions, callback, prCallb
 
         try {
             appState.forEach(c => {
-                const str = `${c.key}=${c.value}; expires=${c.expires}; domain=${c.domain}; path=${c.path};`;
-                jar.setCookie(str, "http://" + c.domain);
+                const cookieDomain = c.domain.startsWith('.') ? c.domain : '.' + c.domain;
+                const cookieUrl = 'https://www.facebook.com';
+                let str = `${c.key}=${c.value}; domain=${cookieDomain}; path=${c.path || '/'};`;
+                if (c.expires && c.expires !== 'undefined') {
+                    str += ` expires=${c.expires};`;
+                }
+                try { jar.setCookie(str, cookieUrl); } catch(e) {}
             });
 
             mainPromise = utils.get('https://www.facebook.com/', jar, null, globalOptions, { noRef: true })
